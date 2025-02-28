@@ -1,28 +1,35 @@
 {
-  "name": "fileupload-backend",
+  "name": "file-upload-api",
   "version": "1.0.0",
-  "description": "Backend for file upload application with MinIO and MongoDB",
-  "main": "dist/server.js",
+  "description": "File upload API with Fastify, Drizzle, MongoDB and MinIO",
+  "main": "dist/index.js",
   "scripts": {
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "lint": "eslint . --ext .ts"
+    "start": "node src/index.js",
+    "lint": "eslint . --ext .ts",
+    "test": "jest"
   },
   "dependencies": {
-    "@fastify/cors": "^8.3.0",
-    "@fastify/multipart": "^7.7.3",
-    "drizzle-orm": "^0.28.6",
-    "fastify": "^4.20.0",
+    "@fastify/cors": "^9.0.0",
+    "@fastify/multipart": "^8.0.0",
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.29.1",
+    "fastify": "^4.24.3",
     "fastify-plugin": "^4.5.1",
-    "minio": "^7.1.1",
-    "mongodb": "^5.8.1"
+    "minio": "^7.1.3",
+    "mongodb": "^6.3.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/node": "^20.5.9",
-    "dotenv": "^16.3.1",
-    "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.10.0",
+    "@types/uuid": "^9.0.7",
+    "drizzle-kit": "^0.20.6",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.2"
   }
 }
