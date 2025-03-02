@@ -78,11 +78,9 @@ export const useFileUpload = () => {
       // Handle response
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
-          const response = JSON.parse(xhr.responseText);
           updateFileStatus(fileItem.id, {
             status: 'success',
             progress: 100,
-            url: response.file.url,
           });
         } else {
           updateFileStatus(fileItem.id, {

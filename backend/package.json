@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node src/index.js",
+    "start": "node src/index.ts",
     "lint": "eslint . --ext .ts",
     "test": "jest"
   },
