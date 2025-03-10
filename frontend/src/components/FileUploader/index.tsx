@@ -10,7 +10,7 @@ export const FileUploader: React.FC = () => {
   const [isCapturing, setIsCapturing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const { files, addFiles, removeFile, uploadFiles, isUploading } = useFileUpload();
+  const { files, addFiles, removeFile, removeFiles, uploadFiles, isUploading } = useFileUpload();
 
   // Handle file drops
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -103,6 +103,7 @@ export const FileUploader: React.FC = () => {
         <FileList 
           files={files} 
           onRemove={removeFile} 
+          onRemoveAll={removeFiles}
           onUpload={uploadFiles} 
           isUploading={isUploading}
         />

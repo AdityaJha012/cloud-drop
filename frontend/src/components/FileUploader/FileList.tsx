@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Upload } from 'lucide-react';
 import FileItemComponent from './FileItem';
 import { FileItem } from './types';
@@ -6,6 +6,7 @@ import { FileItem } from './types';
 interface FileListProps {
   files: FileItem[];
   onRemove: (id: string) => void;
+  onRemoveAll: (files: FileItem[]) => void;
   onUpload: () => void;
   isUploading: boolean;
 }
@@ -13,6 +14,7 @@ interface FileListProps {
 export const FileList: React.FC<FileListProps> = ({ 
   files, 
   onRemove, 
+  onRemoveAll,
   onUpload, 
   isUploading 
 }) => {
@@ -22,6 +24,17 @@ export const FileList: React.FC<FileListProps> = ({
   const successFiles = files.filter(f => f.status === 'success').length;
   const errorFiles = files.filter(f => f.status === 'error').length;
   const uploadingFiles = files.filter(f => f.status === 'uploading').length;
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      files.forEach(file => {
+        if (file.preview) {
+          URL.revokeObjectURL(file.preview);
+        }
+      });
+    };
+  }, [files]);
 
   return (
     <div className="mt-8 animate-fade-in">

@@ -59,3 +59,8 @@
     opacity: 0.5;
   }
 }
+
+.text-xxs {
+  font-size: 0.65rem;
+  line-height: 0.85rem;
+}

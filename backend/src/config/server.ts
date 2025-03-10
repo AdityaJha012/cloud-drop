@@ -20,6 +20,9 @@ export const FILE_UPLOAD_LIMITS = {
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'audio/mpeg',
+    'video/mp4',
+    'application/zip'
   ]
 };

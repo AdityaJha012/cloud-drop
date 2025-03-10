@@ -20,30 +20,51 @@ export const useFileUpload = () => {
 
   // Add files to the list
   const addFiles = useCallback((newFiles: File[]) => {
-    const fileItems: FileItem[] = newFiles.map((file) => ({
-      id: uuidv4(),
-      file,
-      status: 'idle',
-      progress: 0,
-      preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined,
-    }));
-
+    const fileItems: FileItem[] = newFiles.map((file) => {
+      let preview: string | undefined = undefined;
+      
+      // Generate object URLs for all previewable file types
+      if (
+        file.type.startsWith('image/') || 
+        file.type.startsWith('video/') || 
+        file.type.startsWith('audio/') || 
+        file.type === 'application/pdf'
+      ) {
+        preview = URL.createObjectURL(file);
+      }
+      
+      return {
+        id: uuidv4(),
+        file,
+        status: 'idle',
+        progress: 0,
+        preview,
+      };
+    });
+    
     setFiles((prev) => [...prev, ...fileItems]);
   }, []);
 
   // Remove a file from the list
   const removeFile = useCallback((id: string) => {
     setFiles((prev) => {
-      const updatedFiles = prev.filter((file) => file.id !== id);
-      
-      // Revoke object URL to avoid memory leaks
-      const fileToRemove = prev.find((file) => file.id === id);
+      const fileToRemove = prev.find(file => file.id === id);
       if (fileToRemove?.preview) {
         URL.revokeObjectURL(fileToRemove.preview);
       }
-      
-      return updatedFiles;
+      return prev.filter(file => file.id !== id);
     });
+  }, []);
+
+  // Remove all files from the list
+  const removeFiles = useCallback((files: FileItem[]) => {
+    files.forEach(file => {
+      if (file.preview) {
+        URL.revokeObjectURL(file.preview);
+      }
+    });
+
+    setFiles([]);
   }, []);
 
   // Update a file's status and progress
@@ -127,6 +148,7 @@ export const useFileUpload = () => {
     files,
     addFiles,
     removeFile,
+    removeFiles,
     uploadFiles,
     isUploading,
     clearFiles: () => setFiles([]),
