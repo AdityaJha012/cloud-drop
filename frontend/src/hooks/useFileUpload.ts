@@ -58,13 +58,18 @@ export const useFileUpload = () => {
 
   // Remove all files from the list
   const removeFiles = useCallback((files: FileItem[]) => {
+    // Clean up preview URLs
     files.forEach(file => {
       if (file.preview) {
         URL.revokeObjectURL(file.preview);
       }
     });
-
-    setFiles([]);
+    
+    // Create a set of IDs to remove for efficient lookup
+    const idsToRemove = new Set(files.map(file => file.id));
+    
+    // Remove the specified files
+    setFiles(prev => prev.filter(file => !idsToRemove.has(file.id)));
   }, []);
 
   // Update a file's status and progress
