@@ -23,16 +23,9 @@ function App() {
               </div>
               <ThemeToggle />
             </div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Upload files with drag & drop or capture photos directly from your device.
-              Experience seamless uploads with real-time progress tracking.
-            </p>
           </header>
+
           <FileUploader />
-          
-          <footer className="mt-16 text-center text-sm text-gray-500 dark:text-gray-400">
-            <p>© {new Date().getFullYear()} CloudDrop • Secure File Uploads</p>
-          </footer>
         </div>
       </div>
     </ThemeProvider>

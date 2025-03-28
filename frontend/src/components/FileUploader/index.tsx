@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, Camera, FileUp, ImageIcon, CloudUpload } from 'lucide-react';
+import { Upload, Camera, FileUp, ImageIcon, CloudUpload, FileVideo, FileAudio } from 'lucide-react';
 import CameraCapture from './CameraCapture';
 import FileList from './FileList';
 import { useFileUpload } from '../../hooks/useFileUpload';
@@ -35,7 +35,7 @@ export const FileUploader: React.FC = () => {
         <div 
           {...getRootProps()} 
           className={`
-            relative overflow-hidden rounded-2xl p-8 transition-all text-center cursor-pointer
+            relative overflow-hidden rounded-2xl p-8 transition-all text-center
             ${isDragging 
               ? 'bg-blue-50 dark:bg-blue-900/20 shadow-lg' 
               : 'bg-white dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-md hover:shadow-lg'}
@@ -89,6 +89,12 @@ export const FileUploader: React.FC = () => {
           <div className="mt-6 flex justify-center gap-6 text-sm text-gray-500 dark:text-gray-400 relative">
             <div className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-blue-500 dark:text-blue-400" /> Images
+            </div>
+            <div className="flex items-center gap-2">
+              <FileVideo className="w-4 h-4 text-orange-500 dark:text-orange-400" /> Video 
+            </div>
+            <div className="flex items-center gap-2">
+              <FileAudio className="w-4 h-4 text-red-500 dark:text-red-400" /> Audio 
             </div>
             <div className="flex items-center gap-2">
               <FileUp className="w-4 h-4 text-green-500 dark:text-green-400" /> Documents
