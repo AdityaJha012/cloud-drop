@@ -12,7 +12,7 @@ export interface FileItem {
 }
 
 // API Base URL
-const API_URL = 'http://localhost:3000/api/files';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const useFileUpload = () => {
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -91,7 +91,7 @@ export const useFileUpload = () => {
 
       // Create XHR to track progress
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `${API_URL}/upload`, true);
+      xhr.open('POST', `${API_URL}/api/files/upload`, true);
 
       // Track upload progress
       xhr.upload.onprogress = (event) => {
