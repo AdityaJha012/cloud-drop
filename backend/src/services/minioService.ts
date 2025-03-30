@@ -1,7 +1,7 @@
 import { minioClient, bucketName } from '../config/minio';
 import { v4 as uuidv4 } from 'uuid';
 import { Readable } from 'stream';
-import { FileMetadata } from '../types/file';
+import { FileMetadata } from '../types/types';
 import path from 'path';
 
 export class MinioService {
@@ -17,7 +17,7 @@ export class MinioService {
     const id = uuidv4();
     const extension = path.extname(originalFilename);
     const filename = `${id}${extension}`;
-    const filePath = `uploads/${filename}`;
+    const filePath = `cloud-drop/${filename}`;
     
     await minioClient.putObject(
       bucketName,

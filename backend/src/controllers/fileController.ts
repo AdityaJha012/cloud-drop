@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { MultipartFile } from '@fastify/multipart';
 import { fileService } from '../services/fileService';
 import { FILE_UPLOAD_LIMITS } from '../config/server';
-import { FileFilter, PaginationOptions } from '../types/file';
+import { FileFilter, PaginationOptions } from '../types/types';
 
 export class FileController {
   /**

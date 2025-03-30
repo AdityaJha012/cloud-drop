@@ -1,6 +1,6 @@
 import { filesCollection } from '../db/schema';
 import { minioService } from './minioService';
-import { FileMetadata, UploadedFile, FileFilter, PaginationOptions, FileListResult } from '../types/file';
+import { FileMetadata, UploadedFile, FileFilter, PaginationOptions, FileListResult } from '../types/types';
 import { Readable } from 'stream';
 
 export class FileService {

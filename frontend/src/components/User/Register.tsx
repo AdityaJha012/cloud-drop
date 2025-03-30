@@ -11,6 +11,8 @@ type NewUser = {
 };
 
 const Register = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [formData, setFormData] = useState<NewUser>({
     name: '',
     email: '',
@@ -98,16 +100,20 @@ const Register = () => {
     setIsLoading(true);
     
     try {
-      const response = await axios.post('/api/auth/register', { 
+      const response = await axios.post(`${API_URL}/api/auth/register`, { 
         name, 
         email, 
         password 
       });
+
+      const data = await response.data;
       
-      if (response.data.success) {
+      if (data.success) {
         // Redirect to login after successful registration
         navigate('/login', { 
-          state: { message: 'Registration successful! Please log in.' } 
+          state: { 
+            message: data.message,
+          } 
         });
       } else {
         setError('Registration failed. Please try again.');

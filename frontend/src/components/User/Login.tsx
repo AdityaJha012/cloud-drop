@@ -1,19 +1,37 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface LoginProps {
   onLogin: (token: string) => void;
 }
 
 const Login = ({ onLogin }: LoginProps) => {
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const message = location.state?.message;
+
+  useEffect(() => {
+    toast.success(message, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  }, [message]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,11 +40,17 @@ const Login = ({ onLogin }: LoginProps) => {
 
     try {
       // const response = await loginUser(email, password);
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
       
-      if (response.data.token) {
-        onLogin(response.data.token);
-        navigate('/dashboard');
+      const data = await response.data;
+      
+      if (data.success) {
+        onLogin(data.token);
+        navigate('/dashboard', {
+          state: { 
+            message: data.message
+          }
+        });
       } else {
         setError('Login failed. Please check your credentials.');
       }

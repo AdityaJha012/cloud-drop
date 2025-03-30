@@ -37,3 +37,10 @@ export interface FileListResult {
   limit: number;
   totalPages: number;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+}

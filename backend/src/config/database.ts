@@ -13,7 +13,7 @@ const logger = pino({
 });
 
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
-const dbName = process.env.MONGODB_DATABASE || 'fileupload';
+const dbName = process.env.MONGODB_DATABASE || 'cloud-drop';
 
 export const client = new MongoClient(mongoUri);
 export const db = client.db(dbName);

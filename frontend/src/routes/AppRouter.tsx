@@ -44,16 +44,16 @@ const AppRouter = () => {
         <Route 
           path="/dashboard" 
           element={
-            // isAuthenticated ? 
-            <Dashboard onLogout={handleLogout} />  
-            // <Navigate to="/login" />
+            isAuthenticated ? 
+            <Dashboard onLogout={handleLogout} /> :  
+            <Navigate to="/login" />
           } 
         />
         <Route 
           path="/upload" 
           element={
             isAuthenticated ? 
-            <FileUploader /> : 
+            <FileUploader onLogout={handleLogout} /> : 
             <Navigate to="/login" />
           } 
         />
