@@ -13,6 +13,9 @@ export class FileController {
     reply: FastifyReply
   ) {
     try {
+      // Extract the User Id
+      const userId = request.userId;
+
       const data = await request.file();
       
       if (!data) {
@@ -38,7 +41,8 @@ export class FileController {
         data.file, 
         data.filename, 
         data.mimetype, 
-        data.file.bytesRead
+        data.file.bytesRead,
+        userId
       );
       
       return reply.status(201).send(result);
@@ -56,7 +60,11 @@ export class FileController {
     reply: FastifyReply
   ) {
     try {
+      // Extract user id
+      const userId = request.userId;
+
       const parts = request.parts();
+
       const files: Array<{
         fileStream: any,
         filename: string,
@@ -106,7 +114,7 @@ export class FileController {
         return reply.status(400).send({ error: 'No files provided' });
       }
       
-      const results = await fileService.uploadMultipleFiles(files);
+      const results = await fileService.uploadMultipleFiles(files, userId);
       
       return reply.status(201).send(results);
     } catch (error) {

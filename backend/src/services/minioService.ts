@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Readable } from 'stream';
 import { FileMetadata } from '../types/types';
 import path from 'path';
+import { ObjectId } from 'mongodb';
 
 export class MinioService {
   /**
@@ -12,12 +13,13 @@ export class MinioService {
     fileStream: Readable,
     originalFilename: string,
     mimeType: string,
-    size: number
+    size: number,
+    userId: ObjectId | undefined
   ): Promise<FileMetadata> {
     const id = uuidv4();
     const extension = path.extname(originalFilename);
     const filename = `${id}${extension}`;
-    const filePath = `cloud-drop/${filename}`;
+    const filePath = `files/${filename}`;
     
     await minioClient.putObject(
       bucketName,
@@ -37,6 +39,7 @@ export class MinioService {
       size,
       bucket: bucketName,
       path: filePath,
+      uploadedBy: new ObjectId(userId),
       uploadedAt: now,
       updatedAt: now
     };

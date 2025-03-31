@@ -2,6 +2,7 @@ import { filesCollection } from '../db/schema';
 import { minioService } from './minioService';
 import { FileMetadata, UploadedFile, FileFilter, PaginationOptions, FileListResult } from '../types/types';
 import { Readable } from 'stream';
+import { ObjectId } from 'mongodb';
 
 export class FileService {
   /**
@@ -11,9 +12,10 @@ export class FileService {
     fileStream: Readable,
     filename: string,
     mimeType: string,
-    size: number
+    size: number,
+    userId: ObjectId | undefined
   ): Promise<UploadedFile> {
-    const metadata = await minioService.uploadFile(fileStream, filename, mimeType, size);
+    const metadata = await minioService.uploadFile(fileStream, filename, mimeType, size, userId);
     
     // Store metadata in MongoDB
     await filesCollection.insertOne(metadata);
@@ -32,11 +34,12 @@ export class FileService {
       fileStream: Readable,
       filename: string,
       mimeType: string,
-      size: number
-    }>
+      size: number,
+    }>,
+    userId: ObjectId | undefined
   ): Promise<UploadedFile[]> {
     const uploadPromises = files.map(file => 
-      this.uploadSingleFile(file.fileStream, file.filename, file.mimeType, file.size)
+      this.uploadSingleFile(file.fileStream, file.filename, file.mimeType, file.size, userId)
     );
     
     return Promise.all(uploadPromises);

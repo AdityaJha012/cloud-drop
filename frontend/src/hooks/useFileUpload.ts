@@ -85,6 +85,17 @@ export const useFileUpload = () => {
       // Mark file as uploading
       updateFileStatus(fileItem.id, { status: 'uploading', progress: 0 });
 
+      // Get token from localStorage
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        updateFileStatus(fileItem.id, {
+          status: "error",
+          error: "No authentication token found",
+        });
+        return;
+      }
+
       // Create FormData
       const formData = new FormData();
       formData.append('file', fileItem.file);
@@ -92,6 +103,9 @@ export const useFileUpload = () => {
       // Create XHR to track progress
       const xhr = new XMLHttpRequest();
       xhr.open('POST', `${API_URL}/api/files/upload`, true);
+
+      // **Set the Authorization header**
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
       // Track upload progress
       xhr.upload.onprogress = (event) => {

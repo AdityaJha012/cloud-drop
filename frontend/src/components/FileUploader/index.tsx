@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, Camera, FileUp, ImageIcon, CloudUpload, FileVideo, FileAudio } from 'lucide-react';
+import { Upload, Camera, FileUp, ImageIcon, CloudUpload, FileVideo, FileAudio, UploadCloud } from 'lucide-react';
 import CameraCapture from './CameraCapture';
 import FileList from './FileList';
 import { useFileUpload } from '../../hooks/useFileUpload';
@@ -17,13 +17,13 @@ export const FileUploader = ({ onLogout }: FileUploaderProps) => {
   
   const { files, addFiles, removeFile, removeFiles, uploadFiles, isUploading } = useFileUpload();
 
-  // Handle file drops
+  // Handle file drops with better feedback
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setIsDragging(false);
     addFiles(acceptedFiles);
   }, [addFiles]);
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     onDrop,
     onDragEnter: () => setIsDragging(true),
     onDragLeave: () => setIsDragging(false),
@@ -34,20 +34,34 @@ export const FileUploader = ({ onLogout }: FileUploaderProps) => {
     addFiles([file]);
   };
 
+  // Get dropzone style based on drag state
+  const getDropzoneStyle = () => {
+    if (isDragReject) {
+      return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 shadow-lg';
+    }
+    
+    if (isDragAccept) {
+      return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 shadow-lg';
+    }
+    
+    if (isDragging || isDragActive) {
+      return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 shadow-lg';
+    }
+    
+    return 'bg-white dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-800 border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg';
+  };
+
   return (
     <>
       <div className="container mx-auto px-4 py-4">
         <Header onLogout={onLogout} />
-
         <div className="w-full max-w-3xl mx-auto">
           <div 
             {...getRootProps()} 
             className={`
               relative overflow-hidden rounded-2xl p-8 transition-all text-center
-              ${isDragging 
-                ? 'bg-blue-50 dark:bg-blue-900/20 shadow-lg' 
-                : 'bg-white dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-md hover:shadow-lg'}
-              backdrop-blur-sm border border-gray-100 dark:border-gray-700
+              ${getDropzoneStyle()}
+              backdrop-blur-sm border-2
             `}
           >
             {/* Decorative elements */}
@@ -57,16 +71,22 @@ export const FileUploader = ({ onLogout }: FileUploaderProps) => {
             <input {...getInputProps()} ref={fileInputRef} />
             
             <div className="relative p-6">
-              <div className="mx-auto w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 dark:from-blue-600 dark:to-violet-600 flex items-center justify-center mb-6 shadow-lg transform transition-transform hover:scale-105">
+              <div className={`mx-auto w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 dark:from-blue-600 dark:to-violet-600 flex items-center justify-center mb-6 shadow-lg transform transition-transform ${isDragging ? 'scale-110 animate-pulse' : 'hover:scale-105'}`}>
                 <CloudUpload className="w-12 h-12 text-white" />
               </div>
               
               <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">
-                Drop files to upload
+                {isDragging 
+                  ? "Drop files here" 
+                  : "Drop files to upload"}
               </h3>
               
               <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-lg mx-auto">
-                Drag & drop your files here, or use the buttons below to upload files or take photos directly.
+                {isDragReject 
+                  ? "Some files cannot be accepted" 
+                  : isDragAccept 
+                    ? "Drop to upload files" 
+                    : "Drag & drop your files here, or use the buttons below to upload files or take photos directly."}
               </p>
               
               <div className="flex flex-wrap justify-center gap-4">
@@ -94,6 +114,15 @@ export const FileUploader = ({ onLogout }: FileUploaderProps) => {
               </div>
             </div>
             
+            {/* Visible upload animation when dragging */}
+            {isDragging && (
+              <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
+                <div className="rounded-full p-6 bg-white/80 dark:bg-gray-800/80 animate-bounce shadow-lg">
+                  <UploadCloud className="w-12 h-12 text-blue-500" />
+                </div>
+              </div>
+            )}
+            
             <div className="mt-6 flex justify-center gap-6 text-sm text-gray-500 dark:text-gray-400 relative">
               <div className="flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-blue-500 dark:text-blue-400" /> Images
@@ -112,17 +141,17 @@ export const FileUploader = ({ onLogout }: FileUploaderProps) => {
               </div>
             </div>
           </div>
-
+          
           {/* File List */}
           <FileList 
-            files={files} 
-            onRemove={removeFile} 
+            files={files}
+            onRemove={removeFile}
             onRemoveAll={removeFiles}
-            onUpload={uploadFiles} 
+            onUpload={uploadFiles}
             isUploading={isUploading}
           />
         </div>
-
+        
         {/* Camera Component */}
         {isCapturing && (
           <CameraCapture

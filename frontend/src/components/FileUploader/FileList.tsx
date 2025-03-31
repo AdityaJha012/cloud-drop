@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Upload, Trash2 } from 'lucide-react';
 import FileItemComponent from './FileItem';
-import { FileItem } from './types';
+import { FileItem } from '../../types/types';
 
 interface FileListProps {
   files: FileItem[];
@@ -38,16 +38,16 @@ export const FileList: React.FC<FileListProps> = ({
   const errorFiles = files.filter(f => f.status === 'error').length;
   const uploadingFiles = files.filter(f => f.status === 'uploading').length;
 
-  const handleDeleteAllClick = () => {
+  const handleRemoveAllClick = () => {
     setShowConfirmation(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmRemove = () => {
     onRemoveAll(files);
     setShowConfirmation(false);
   };
 
-  const handleCancelDelete = () => {
+  const handleCancelRemove = () => {
     setShowConfirmation(false);
   };
 
@@ -109,19 +109,18 @@ export const FileList: React.FC<FileListProps> = ({
               </button>
             )}
             
-            <button
-              onClick={handleDeleteAllClick}
-              disabled={isUploading}
-              className={`
-                px-5 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-all shadow-sm
-                ${isUploading
-                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-red-500 to-rose-600 text-white hover:from-red-600 hover:to-rose-700 hover:shadow'}
-              `}
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete All
-            </button>
+            {pendingFiles > 0 && (
+              <button
+                onClick={handleRemoveAllClick}
+                className={`
+                  px-5 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-all shadow-sm
+                  bg-gradient-to-r from-red-500 to-rose-600 text-white hover:from-red-600 hover:to-rose-700 hover:shadow
+                `}
+              >
+                <Trash2 className="w-4 h-4" />
+                Remove All
+              </button>
+            )}
           </div>
         </div>
         
@@ -149,13 +148,13 @@ export const FileList: React.FC<FileListProps> = ({
             </p>
             <div className="flex justify-end gap-3">
               <button
-                onClick={handleCancelDelete}
+                onClick={handleCancelRemove}
                 className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               >
                 Cancel
               </button>
               <button
-                onClick={handleConfirmDelete}
+                onClick={handleConfirmRemove}
                 className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
               >
                 Delete All

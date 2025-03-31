@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export interface FileMetadata {
   id: string;
   filename: string;
@@ -6,6 +8,7 @@ export interface FileMetadata {
   size: number;
   bucket: string;
   path: string;
+  uploadedBy: ObjectId;
   uploadedAt: Date;
   updatedAt: Date;
 }

@@ -1,12 +1,13 @@
 import { FastifyInstance } from 'fastify';
 import { fileController } from '../controllers/fileController';
+import { authorize } from '../middlewares/authMiddleware';
 
 export const registerFileRoutes = (server: FastifyInstance): void => {
   // Upload a single file
-  server.post('/api/files/upload', fileController.uploadSingleFile);
+  server.post('/api/files/upload', { preHandler: authorize }, fileController.uploadSingleFile);
   
   // Upload multiple files
-  server.post('/api/files/upload-multiple', fileController.uploadMultipleFiles);
+  server.post('/api/files/upload-multiple', { preHandler: authorize }, fileController.uploadMultipleFiles);
   
   // Get all files (with optional filters and pagination)
   server.get('/api/files', fileController.getAllFiles);
