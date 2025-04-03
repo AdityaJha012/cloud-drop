@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Image, File as FileIcon, CheckCircle, AlertCircle, Loader2, Trash2, FileText, FileAudio, FileVideo, Film, Eye } from 'lucide-react';
-import { FileItem } from './types';
+import { FileItem } from '../../types/types';
 
 // First, let's add a simple modal component
 const PreviewModal: React.FC<{

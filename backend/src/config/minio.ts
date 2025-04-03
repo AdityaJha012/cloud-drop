@@ -13,7 +13,7 @@ const logger = pino({
 });
 
 // Make sure the bucket name is properly defined
-export const bucketName = process.env.MINIO_BUCKET || 'uploads';
+export const bucketName = process.env.MINIO_BUCKET || 'cloud-drop';
 
 const minioConfig = {
   endPoint: process.env.MINIO_ENDPOINT || 'localhost',

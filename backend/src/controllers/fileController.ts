@@ -1,8 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { MultipartFile } from '@fastify/multipart';
 import { fileService } from '../services/fileService';
 import { FILE_UPLOAD_LIMITS } from '../config/server';
-import { FileFilter, PaginationOptions } from '../types/file';
+import { FileFilter, PaginationOptions, FileQueryString } from '../types/types';
 
 export class FileController {
   /**
@@ -13,6 +12,9 @@ export class FileController {
     reply: FastifyReply
   ) {
     try {
+      // Extract the User Id
+      const userId = request.userId;
+
       const data = await request.file();
       
       if (!data) {
@@ -38,7 +40,8 @@ export class FileController {
         data.file, 
         data.filename, 
         data.mimetype, 
-        data.file.bytesRead
+        data.file.bytesRead,
+        userId
       );
       
       return reply.status(201).send(result);
@@ -49,93 +52,21 @@ export class FileController {
   }
   
   /**
-   * Upload multiple files
-   */
-  async uploadMultipleFiles(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
-    try {
-      const parts = request.parts();
-      const files: Array<{
-        fileStream: any,
-        filename: string,
-        mimeType: string,
-        size: number
-      }> = [];
-      
-      let fileCount = 0;
-      
-      for await (const part of parts) {
-        if (part.type === 'file') {
-          fileCount++;
-          
-          if (fileCount > FILE_UPLOAD_LIMITS.maxFiles) {
-            return reply.status(400).send({ 
-              error: `Too many files. Maximum allowed is ${FILE_UPLOAD_LIMITS.maxFiles}` 
-            });
-          }
-          
-          const file = part as MultipartFile;
-          
-          // Check file size
-          if (file.file.bytesRead > FILE_UPLOAD_LIMITS.maxFileSize) {
-            return reply.status(400).send({ 
-              error: `File ${file.filename} exceeds the size limit of ${FILE_UPLOAD_LIMITS.maxFileSize / (1024 * 1024)}MB` 
-            });
-          }
-          
-          // Check MIME type
-          if (!FILE_UPLOAD_LIMITS.allowedMimeTypes.includes(file.mimetype)) {
-            return reply.status(400).send({ 
-              error: `File type for ${file.filename} not allowed`,
-              allowedTypes: FILE_UPLOAD_LIMITS.allowedMimeTypes
-            });
-          }
-          
-          files.push({
-            fileStream: file.file,
-            filename: file.filename,
-            mimeType: file.mimetype,
-            size: file.file.bytesRead
-          });
-        }
-      }
-      
-      if (files.length === 0) {
-        return reply.status(400).send({ error: 'No files provided' });
-      }
-      
-      const results = await fileService.uploadMultipleFiles(files);
-      
-      return reply.status(201).send(results);
-    } catch (error) {
-      console.error('Error uploading files:', error);
-      return reply.status(500).send({ error: 'Failed to upload files' });
-    }
-  }
-  
-  /**
    * Get all files with filters and pagination
    */
   async getAllFiles(
-    request: FastifyRequest<{
-      Querystring: {
-        page?: number;
-        limit?: number;
-        id?: string;
-        filename?: string;
-        mimeType?: string;
-        fromDate?: string;
-        toDate?: string;
-      }
+    request: FastifyRequest<{ 
+      Querystring: FileQueryString
     }>,
     reply: FastifyReply
   ) {
     try {
       const { page = 1, limit = 20, id, filename, mimeType, fromDate, toDate } = request.query;
-      
-      const filter: FileFilter = {};
+
+      // Now you can safely access request.userId
+      const userId = request.userId;
+
+      const filter: FileFilter = { uploadedBy: userId };
       
       if (id) filter.id = id;
       if (filename) filter.filename = filename;
@@ -164,33 +95,6 @@ export class FileController {
     } catch (error) {
       console.error('Error getting files:', error);
       return reply.status(500).send({ error: 'Failed to get files' });
-    }
-  }
-  
-  /**
-   * Get a single file by ID
-   */
-  async getFileById(
-    request: FastifyRequest<{
-      Params: {
-        id: string;
-      }
-    }>,
-    reply: FastifyReply
-  ) {
-    try {
-      const { id } = request.params;
-      
-      const file = await fileService.getFileById(id);
-      
-      if (!file) {
-        return reply.status(404).send({ error: 'File not found' });
-      }
-      
-      return reply.send(file);
-    } catch (error) {
-      console.error('Error getting file:', error);
-      return reply.status(500).send({ error: 'Failed to get file' });
     }
   }
   

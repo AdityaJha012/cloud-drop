@@ -12,7 +12,7 @@ export interface FileItem {
 }
 
 // API Base URL
-const API_URL = 'http://localhost:3000/api/files';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const useFileUpload = () => {
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -85,13 +85,27 @@ export const useFileUpload = () => {
       // Mark file as uploading
       updateFileStatus(fileItem.id, { status: 'uploading', progress: 0 });
 
+      // Get token from localStorage
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        updateFileStatus(fileItem.id, {
+          status: "error",
+          error: "No authentication token found",
+        });
+        return;
+      }
+
       // Create FormData
       const formData = new FormData();
       formData.append('file', fileItem.file);
 
       // Create XHR to track progress
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `${API_URL}/upload`, true);
+      xhr.open('POST', `${API_URL}/api/files/upload`, true);
+
+      // **Set the Authorization header**
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
       // Track upload progress
       xhr.upload.onprogress = (event) => {

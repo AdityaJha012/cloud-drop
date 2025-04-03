@@ -5,6 +5,7 @@ import { SERVER_CONFIG } from './config/server';
 import { initializeDatabase } from './db';
 import { initializeMinio } from './config/minio';
 import { registerFileRoutes } from './routes/fileRoutes';
+import { registerAuthRoutes } from './routes/authRoutes';
 import pino from 'pino';
 
 // Create logger
@@ -64,6 +65,7 @@ const startServer = async () => {
     // Register routes
     logger.info('Registering API routes...');
     registerFileRoutes(server);
+    registerAuthRoutes(server);
     
     // Health check route
     server.get('/health', async () => {
