@@ -22,6 +22,7 @@ export interface FileFilter {
   id?: string;
   filename?: string;
   mimeType?: string;
+  uploadedBy?: ObjectId,
   uploadedAt?: {
     from?: Date;
     to?: Date;
@@ -31,6 +32,16 @@ export interface FileFilter {
 export interface PaginationOptions {
   page: number;
   limit: number;
+}
+
+export interface FileQueryString {
+  page?: number;
+  limit?: number;
+  id?: string;
+  filename?: string;
+  mimeType?: string;
+  fromDate?: string;
+  toDate?: string;
 }
 
 export interface FileListResult {

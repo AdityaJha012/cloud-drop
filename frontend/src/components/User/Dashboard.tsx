@@ -12,7 +12,7 @@ interface FileProps {
     originalFilename: string;
     mimeType: string;
     size: number;
-    uploadedDate: string;
+    uploadedAt: string;
   }
   url: string;
 }
@@ -22,6 +22,8 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ onLogout }: DashboardProps) => {
+  const token = localStorage.getItem('token');
+
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [files, setFiles] = useState<FileProps[]>([]);
@@ -54,7 +56,6 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
     setIsLoading(true);
     try {
       // Replace with your actual API endpoint
-      const token = localStorage.getItem('token');
       const response = await axios.get(`${API_URL}/api/files`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -72,7 +73,6 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this file?')) {
       try {
-        const token = localStorage.getItem('token');
         await axios.delete(`${API_URL}/api/files/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -287,12 +287,13 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                   </h3>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{formatFileSize(file.metadata.size)}</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{formatDate(file.metadata.uploadedDate)}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{formatDate(file.metadata.uploadedAt)}</p>
                 
                 <div className="mt-4 flex space-x-2">
                   <a 
                     href={file.url} 
                     download={file.metadata.originalFilename}
+                    target='_blank'
                     className="flex-1 flex items-center justify-center px-3 py-1.5 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded hover:bg-blue-100 dark:hover:bg-blue-900/50"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
@@ -361,13 +362,14 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                       <div className="text-sm text-gray-500 dark:text-gray-400">{formatFileSize(file.metadata.size)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">{formatDate(file.metadata.uploadedDate)}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">{formatDate(file.metadata.uploadedAt)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
                         <a 
                           href={file.url} 
                           download={file.metadata.originalFilename}
+                          target='_blank'
                           className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -49,6 +49,30 @@ export class AuthController {
       return reply.status(500).send({ error: error.message || 'Failed to login user' });
     }
   }
+
+  async verifyUser(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ) {
+    try {
+      const authHeader = request.headers.authorization;
+
+      if (!authHeader) {
+        return reply.status(401).send({ error: 'No token provided' });
+      }
+
+      const token = authHeader.split(' ')[1];
+
+      if (!token) {
+        return reply.status(401).send({ error: 'Invalid token format' });
+      }
+
+      return await authService.verifyUser(token);
+    } catch (error) {
+      console.error('Token verification error:', error);
+      return reply.status(500).send({ error: 'Internal Server Error' });
+    }
+  }
 }
 
 export const authController = new AuthController();

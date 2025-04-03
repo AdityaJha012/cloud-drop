@@ -7,4 +7,7 @@ export const registerAuthRoutes = (server: FastifyInstance): void => {
   
   // Login a user
   server.post('/api/auth/login', authController.loginUser);
+
+  // Verify token
+  server.get('/api/auth/verify', authController.verifyUser);
 };

@@ -1,4 +1,3 @@
-// src/types/fastify.d.ts
 import { ObjectId } from "mongodb";
 import { FastifyRequest } from "fastify";
 

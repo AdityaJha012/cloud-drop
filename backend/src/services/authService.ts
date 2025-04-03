@@ -76,6 +76,16 @@ export class AuthService {
       return { success: false, message: "An error occurred while logging in user." };
     }
   }
+
+  async verifyUser(token: string) {
+    try {
+      const decoded = jwt.verify(token, SECRET_KEY) as { id: string, email: string };
+      return { success: true, message: "User verified successfully", id: decoded.id, email: decoded.email };
+    } catch (error) {
+      logger.error("Error verifying user:", error);
+      return { success: false, message: "An error occurred while verifying user." };
+    }
+  }
 }
 
 export const authService = new AuthService();

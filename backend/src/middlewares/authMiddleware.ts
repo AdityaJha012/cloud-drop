@@ -2,7 +2,6 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import jwt from 'jsonwebtoken';
 import { ObjectId } from "mongodb";
 import { usersCollection } from "../db/schema";
-import { User } from "../types/types";
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret';
 
