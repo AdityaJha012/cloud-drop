@@ -39,7 +39,6 @@ const Login = ({ onLogin }: LoginProps) => {
     setIsLoading(true);
 
     try {
-      // const response = await loginUser(email, password);
       const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
       
       const data = await response.data;
@@ -115,14 +114,6 @@ const Login = ({ onLogin }: LoginProps) => {
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-end mb-6">
-                <div className="text-sm">
-                  <a href="#" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-                    Forgot password?
-                  </a>
                 </div>
               </div>
               
